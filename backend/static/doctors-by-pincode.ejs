@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors by Pincode</title>
+   <style>/* General Styles */
+/* General Styles */
+/* General Styles */
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #e6f2ff, #cce0ff);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #003366;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+    margin: 40px 0;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: #004080;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Form Styles */
+form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 400px;
+    margin-bottom: 30px;
+    border: 1px solid #003366;
+}
+
+label {
+    font-size: 1.2rem;
+    color: #004080;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    padding: 12px;
+    border: 2px solid #004080;
+    border-radius: 8px;
+    background: #f0f8ff;
+    margin-bottom: 20px;
+    width: 100%;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #003366;
+}
+
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    background: #004080;
+    color: #ffffff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: #003366;
+    transform: scale(1.05);
+}
+
+/* Link Styles */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #004080;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #003366;
+    text-decoration: underline;
+}
+
+/* Table Styles */
+table {
+    width: 90%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin: 30px 0;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+thead {
+    background: #003366;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 1rem;
+    border-bottom: 3px solid #004080;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9ff;
+}
+
+tr:hover {
+    background: #e6f2ff;
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    form {
+        width: 95%;
+    }
+
+    table {
+        width: 100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+    <h1>Find Doctors by Pincode</h1>
+
+    <!-- Form to enter pincode -->
+    <form action="/doctors-by-pincode" method="POST">
+        <label for="pincode">Enter Pincode:</label>
+        <input type="text" id="pincode" name="pincode" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (doctors && doctors.length > 0) { %>
+        <h2>Doctors and Hospitals in Pincode(s): <%= pincode %></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Doctor ID</th>
+                    <th>Doctor Name</th>
+                    <th>Specialization</th>
+                    <th>Timing</th>
+                    <th>Years of Experience</th>
+                    <th>Department</th>
+                    <th>Hospital (Pincode 1)</th>
+                    <!-- <th>Hospital (Pincode 2)</th>
+                    <th>Hospital (Pincode 3)</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <% doctors.forEach(function(doctor) { %>
+                    <tr>
+                        <td><%= doctor.doctor_id %></td>
+                        <td><%= doctor.doctor_name %></td>
+                        <td><%= doctor.specialization %></td>
+                        <td><%= doctor.timing %></td>
+                        <td><%= doctor.years_of_experience %></td>
+                        <td><%= doctor.department %></td>
+                        <td><%= doctor.hospital_for_pincode1 || 'N/A' %></td>
+                        <!-- <td><%= doctor.hospital_for_pincode2 || 'N/A' %></td>
+                        <td><%= doctor.hospital_for_pincode3 || 'N/A' %></td> -->
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else if (pincode) { %>
+        <p>No doctors found for the entered pincode(s).</p>
+    <% } %>
+    
+    <a href="/">Back to Home</a>
+
+    <!-- Include GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+<script src="animations.js"></script>
+<script>// animations.js
+
+   // animations.js
+// animations.js
+// animations.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    // GSAP animations for the header
+    gsap.from('h1', {
+        duration: 1.5,
+        opacity: 0,
+        y: -50,
+        scale: 1.1,
+        ease: 'power4.out'
+    });
+
+    // GSAP animation for form
+    gsap.from('form', {
+        duration: 1.2,
+        opacity: 0,
+        y: 50,
+        scale: 0.9,
+        ease: 'back.out(1.2)'
+    });
+
+    // GSAP animations for table rows
+    gsap.from('table tbody tr', {
+        duration: 0.8,
+        opacity: 0,
+        y: 20,
+        stagger: 0.2,
+        ease: 'power2.out'
+    });
+
+    // GSAP animation for buttons
+    gsap.from('button', {
+        duration: 0.8,
+        opacity: 0,
+        y: 20,
+        ease: 'bounce.out'
+    });
+
+    // GSAP animation for inputs
+    gsap.from('input[type="text"]', {
+        duration: 0.8,
+        opacity: 0,
+        x: -30,
+        ease: 'power2.out'
+    });
+
+    // GSAP animation for links
+    gsap.from('a', {
+        duration: 0.8,
+        opacity: 0,
+        y: 20,
+        delay: 0.5,
+        ease: 'power2.out'
+    });
+});
+
+
+    </script>
+</body>
+</html>

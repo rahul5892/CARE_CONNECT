@@ -1,0 +1,296 @@
+    Table "public.appointments"
+          Column           |          Type          | Collation | Nullable | Default
+---------------------------+------------------------+-----------+----------+---------
+ doctor_id                 | character varying(10)  |           |          |
+ doctor_name               | character varying(100) |           |          |
+ specialization            | character varying(100) |           |          |
+ appointment_date          | date                   |           |          |
+ appointment_time          | time without time zone |           |          |
+ patient_id                | character varying(50)  |           |          |
+ patient_name              | character varying(100) |           |          |
+ queue_number              | integer                |           |          |
+ scheduled_start_time      | time without time zone |           |          |
+ actual_start_time         | time without time zone |           |          |
+ waiting_time_min          | integer                |           |          |
+ consultation_duration_min | integer                |           |          |
+ clinic_id                 | character varying(10)  |           |          |
+ department                | character varying(100) |           |          |
+ date_of_record            | date                   |           |          |
+ disease                   | character varying(100) |           |          |
+ severity                  | character varying(100) |           |          |
+ severity_order            | integer                |           |          |
+ chatbot                   | character varying(500) |           |          |
+ summarizer                | text                   |           |          |
+ age                       | integer                |           |          |
+ weight                    | integer                |           |          |
+ mail                      | character varying(100) |           |          |
+ pincode                   | character varying(10)  |           |          |
+Foreign-key constraints:
+    "fk_doctor" FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id)
+    "fk_patient" FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+
+-----------------------------------------------------------------
+    Table "public.beds"
+     Column     |          Type          | Collation | Nullable |
+      Default
+----------------+------------------------+-----------+----------+--------------------------------------
+ bed_id         | integer                |           | not null | nextval('beds_bed_id_seq'::regclass)
+ patient_id     | character varying(200) |           | not null |
+ patient_name   | character varying(100) |           |          |
+ doctor_id      | character varying(20)  |           |          |
+ doctor_name    | character varying(50)  |           |          |
+ disease        | character varying(100) |           |          |
+ severity       | character varying(50)  |           |          |
+ severity_order | integer                |           |          |
+ queue_number   | integer                |           |          |
+ allocated_date | date                   |           |          | CURRENT_DATE
+ allocated_time | time without time zone |           |          | CURRENT_TIME
+ chatbot        | character varying(500) |           |          |
+ summarizer     | text                   |           |          |
+ age            | integer                |           |          |
+ weight         | integer                |           |          |
+ mail           | character varying(100) |           |          |
+ pincode        | character varying(10)  |           |          |
+Indexes:
+    "beds_pkey" PRIMARY KEY, btree (bed_id)
+Foreign-key constraints:
+    "beds_doctor_id_fkey" FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id)
+    "beds_patient_id_fkey" FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+
+
+    ------------------------------------------------------------
+            Table "public.current_med"
+    Column     |          Type          | Collation | Nullable |
+      Default
+---------------+------------------------+-----------+----------+---------------------------------------
+ id            | integer                |           | not null | nextval('medicines_id_seq'::regclass)
+ medicine_name | character varying(100) |           | not null |
+ dosage        | character varying(50)  |           | not null |
+ expiry_date   | date                   |           | not null |
+ stock         | integer                |           | not null |
+ med_limit     | integer                |           |          |
+Indexes:
+    "medicines_pkey" PRIMARY KEY, btree (id)
+Check constraints:
+    "medicines_stock_check" CHECK (stock >= 0)
+
+--------------------------------------------------------------------------------------------------
+       Table "public.doctors"
+       Column        |          Type          | Collation | Nullable | Default
+---------------------+------------------------+-----------+----------+---------
+ doctor_id           | character varying(20)  |           | not null |
+ doctor_name         | character varying(50)  |           |          |
+ specialization      | character varying(50)  |           |          |
+ timing              | time without time zone |           |          |
+ years_of_experience | integer                |           |          |
+ department          | character varying(50)  |           |          |
+ pincode1            | character varying(6)   |           |          |
+ pincode2            | character varying(6)   |           |          |
+ pincode3            | character varying(6)   |           |          |
+Indexes:
+    "doctors_pkey" PRIMARY KEY, btree (doctor_id)
+Referenced by:
+    TABLE "beds" CONSTRAINT "beds_doctor_id_fkey" FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id)
+    TABLE "appointments" CONSTRAINT "fk_doctor" FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id)
+
+
+ select * from doctors;
+ doctor_id |     doctor_name     |   specialization   |  timing  | years_of_experience |    department    | pincode1 | pincode2 | pincode3
+-----------+---------------------+--------------------+----------+---------------------+------------------+----------+----------+----------
+ D101      | Dr. Aarav Sharma    | Cardiologist       | 08:00:00 |                  15 | Cardiology       | 500001   | 500020   | 500039
+ D102      | Dr. Saanvi Reddy    | Dermatologist      | 09:00:00 |                  10 | Dermatology      | 500002   | 500021   | 500040
+ D103      | Dr. Arjun Singh     | Pediatrician       | 10:00:00 |                  12 | Pediatrics       | 500003   | 500022   | 500041
+ D104      | Dr. Ananya Patel    | Neurologist        | 11:00:00 |                   8 | Neurology        | 500004   | 500023   | 500042
+ D105      | Dr. Vihaan Rao      | Orthopedics        | 12:00:00 |                  20 | Orthopedics      | 500005   | 500024   | 500043
+ D106      | Dr. Ishaan Gupta    | Nephrology         | 13:00:00 |                   7 | Nephrology       | 500006   | 500025   | 500044
+ D107      | Dr. Meera Iyer      | General Medicine   | 14:00:00 |                  18 | General Medicine | 500007   | 500026   | 500045
+ D108      | Dr. Kunal Desai     | Gastroenterologist | 15:00:00 |                   9 | Gastroenterology | 500008   | 500027   | 500046
+ D109      | Dr. Riya Nair       | Ophthalmologist    | 16:00:00 |                  13 | Ophthalmology    | 500009   | 500028   | 500047
+ D110      | Dr. Kabir Kapoor    | Endocrinologist    | 17:00:00 |                  14 | Endocrinology    | 500010   | 500029   | 500048
+ D111      | Dr. Tara Banerjee   | Psychiatrist       | 18:00:00 |                  11 | Psychiatry       | 500011   | 500030   | 500049
+ D120      | Dr. Kavya Joshi     | Neurologist        | 15:30:00 |                  10 | Neurology        | 500020   | 500039   | 500002
+ D121      | Dr. Arvind Chawla   | Hematologist       | 16:30:00 |                   8 | Hematology       | 500021   | 500040   | 500003
+ D122      | Dr. Nitin Kapoor    | Cardiologist       | 08:00:00 |                  12 | Cardiology       | 500022   | 500041   | 500004
+ D123      | Dr. Priya Sharma    | Cardiologist       | 09:00:00 |                  14 | Cardiology       | 500023   | 500042   | 500005
+ D124      | Dr. Aisha Khan      | Dermatologist      | 10:00:00 |                   8 | Dermatology      | 500024   | 500043   | 500006
+ D125      | Dr. Rahul Deshmukh  | Dermatologist      | 11:00:00 |                  11 | Dermatology      | 500025   | 500044   | 500007
+ D126      | Dr. Anil Sharma     | Pediatrician       | 12:00:00 |                  15 | Pediatrics       | 500026   | 500045   | 500008
+ D127      | Dr. Shreya Gupta    | Pediatrician       | 13:00:00 |                   9 | Pediatrics       | 500027   | 500046   | 500009
+ D128      | Dr. Harsh Patel     | Neurologist        | 14:00:00 |                   6 | Neurology        | 500028   | 500047   | 500010
+ D129      | Dr. Neelam Kapoor   | Neurologist        | 15:00:00 |                  11 | Neurology        | 500029   | 500048   | 500011
+ D130      | Dr. Kiran Rao       | Orthopedics        | 16:00:00 |                  18 | Orthopedics      | 500030   | 500049   | 500012
+ D131      | Dr. Sandeep Yadav   | Orthopedics        | 17:00:00 |                  15 | Orthopedics      | 500031   | 500050   | 500013
+ D132      | Dr. Anuja Iyer      | Nephrology         | 18:00:00 |                   8 | Nephrology       | 500032   | 500051   | 500014
+ D133      | Dr. Rohit Bansal    | Nephrology         | 19:00:00 |                   5 | Nephrology       | 500033   | 500052   | 500015
+ D134      | Dr. Alok Sinha      | Gastroenterologist | 08:30:00 |                  12 | Gastroenterology | 500034   | 500053   | 500016
+ D135      | Dr. Meenal Singh    | Gastroenterologist | 09:30:00 |                   7 | Gastroenterology | 500035   | 500054   | 500017
+ D136      | Dr. Gaurav Kumar    | Ophthalmologist    | 10:30:00 |                  16 | Ophthalmology    | 500036   | 500055   | 500018
+ D137      | Dr. Sakshi Mehta    | Ophthalmologist    | 11:30:00 |                  14 | Ophthalmology    | 500037   | 500056   | 500019
+ D138      | Dr. Pooja Reddy     | Endocrinologist    | 12:30:00 |                   9 | Endocrinology    | 500038   | 500001   | 500020
+ D139      | Dr. Vivek Jain      | Endocrinologist    | 13:30:00 |                  13 | Endocrinology    | 500039   | 500002   | 500021
+ D140      | Dr. Manju Singh     | Psychiatrist       | 14:30:00 |                   7 | Psychiatry       | 500040   | 500003   | 500022
+ D141      | Dr. Rajesh Patel    | Psychiatrist       | 15:30:00 |                  10 | Psychiatry       | 500041   | 500004   | 500023
+ D142      | Dr. Ankit Sinha     | Oncologist         | 16:30:00 |                  12 | Oncology         | 500042   | 500005   | 500024
+ D143      | Dr. Priya Agarwal   | Oncologist         | 17:30:00 |                  14 | Oncology         | 500043   | 500006   | 500025
+ D144      | Dr. Ramesh Kumar    | Cardiologist       | 08:00:00 |                  10 | Cardiology       | 500044   | 500007   | 500026
+ D145      | Dr. Suresh Patel    | Cardiologist       | 09:00:00 |                  12 | Cardiology       | 500045   | 500008   | 500027
+ D146      | Dr. Mahesh Shah     | Cardiologist       | 10:00:00 |                  15 | Cardiology       | 500046   | 500009   | 500028
+ D147      | Dr. Rohan Jain      | Dermatologist      | 11:00:00 |                   9 | Dermatology      | 500047   | 500010   | 500029
+ D148      | Dr. Apeksha Mehta   | Dermatologist      | 12:00:00 |                  11 | Dermatology      | 500048   | 500011   | 500030
+ D149      | Dr. Karan Patel     | Dermatologist      | 13:00:00 |                  14 | Dermatology      | 500049   | 500012   | 500031
+ D150      | Dr. Sneha Reddy     | Pediatrician       | 14:00:00 |                  10 | Pediatrics       | 500050   | 500013   | 500032
+ D151      | Dr. Ravi Kumar      | Pediatrician       | 15:00:00 |                  12 | Pediatrics       | 500051   | 500014   | 500033
+ D152      | Dr. Priyanka Singh  | Pediatrician       | 16:00:00 |                  15 | Pediatrics       | 500052   | 500015   | 500034
+ D153      | Dr. Sagar Desai     | Neurologist        | 17:00:00 |                   9 | Neurology        | 500053   | 500016   | 500035
+ D154      | Dr. Akshay Jain     | Neurologist        | 18:00:00 |                  11 | Neurology        | 500054   | 500017   | 500036
+ D155      | Dr. Neha Patel      | Neurologist        | 19:00:00 |                  14 | Neurology        | 500055   | 500018   | 500037
+ D156      | Dr. Vikram Singh    | Orthopedics        | 08:30:00 |                  12 | Orthopedics      | 500056   | 500019   | 500038
+ D157      | Dr. Suresh Reddy    | Orthopedics        | 09:30:00 |                  15 | Orthopedics      |          |          |
+ D158      | Dr. Rakesh Kumar    | Orthopedics        | 10:30:00 |                  18 | Orthopedics      |          |          |
+ D159      | Dr. Preeti Patel    | Nephrology         | 11:30:00 |                  10 | Nephrology       |          |          |
+ D160      | Dr. Amit Jain       | Nephrology         | 12:30:00 |                  12 | Nephrology       |          |          |
+ D161      | Dr. Smita Desai     | Nephrology         | 13:30:00 |                  15 | Nephrology       |          |          |
+ D162      | Dr. Rajiv Kumar     | Gastroenterologist | 14:30:00 |                  11 | Gastroenterology |          |          |
+ D163      | Dr. Nalini Patel    | Gastroenterologist | 15:30:00 |                  14 | Gastroenterology |          |          |
+ D164      | Dr. Vinay Jain      | Gastroenterologist | 16:30:00 |                  17 | Gastroenterology |          |          |
+ D165      | Dr. Anjali Reddy    | Ophthalmologist    | 17:30:00 |                  12 | Ophthalmology    |          |          |
+ D166      | Dr. Sunil Kumar     | Ophthalmologist    | 18:30:00 |                  15 | Ophthalmology    |          |          |
+ D167      | Dr. Leela Patel     | Ophthalmologist    | 19:30:00 |                  18 | Ophthalmology    |          |          |
+ D112      | Dr. Aarohi Malhotra | Oncologist         | 19:00:00 |                  16 | Oncology         | 500012   | 500031   | 500050
+ D113      | Dr. Manav Prasad    | Pulmonologist      | 08:30:00 |                   5 | Pulmonology      | 500013   | 500032   | 500051
+ D114      | Dr. Nisha Pillai    | Rheumatologist     | 09:30:00 |                   6 | Rheumatology     | 500014   | 500033   | 500052
+ D115      | Dr. Aditya Mehta    | Urologist          | 10:30:00 |                  13 | Urology          | 500015   | 500034   | 500053
+ D116      | Dr. Priya Thakur    | Gynecologist       | 11:30:00 |                  17 | Gynecology       | 500016   | 500035   | 500054
+ D117      | Dr. Sanjay Ahuja    | ENT Specialist     | 12:30:00 |                   4 | ENT              | 500017   | 500036   | 500055
+ D118      | Dr. Radhika Bhatt   | Dermatologist      | 13:30:00 |                   9 | Dermatology      | 500018   | 500037   | 500056
+ D119      | Dr. Dev Patel       | Orthopedics        | 14:30:00 |                  19 | Orthopedics      | 500019   | 500038   | 500001
+ D168      | Dr. Rameshwar Singh | Endocrinologist    | 08:00:00 |                  11 | Endocrinology    |          |          |
+ D169      | Dr. Suman Jain      | Endocrinologist    | 09:00:00 |                  14 | Endocrinology    |          |          |
+ D170      | Dr. Kavita Desai    | Endocrinologist    | 10:00:00 |                  17 | Endocrinology    |          |          |
+ D171      | Dr. Rakesh Patel    | Psychiatrist       | 11:00:00 |                  12 | Psychiatry       |          |          |
+ D172      | Dr. Sunita Kumar    | Psychiatrist       | 12:00:00 |                  15 | Psychiatry       |          |          |
+ D173      | Dr. Anil Jain       | Psychiatrist       | 13:00:00 |                  18 | Psychiatry       |          |          |
+ D174      | Dr. Aman Kapoor     | Oncologist         | 08:30:00 |                  15 | Oncology         | 500001   | 500020   | 500030
+ D175      | Dr. Rohan Desai     | Urologist          | 09:30:00 |                  12 | Urology          | 500002   | 500021   | 500031
+ D176      | Dr. Sakshi Mehta    | Pulmonologist      | 10:30:00 |                  11 | Pulmonology      | 500003   | 500022   | 500032
+ D177      | Dr. Abhay Singh     | Neurologist        | 11:30:00 |                  14 | Neurology        | 500004   | 500023   | 500033
+ D178      | Dr. Neha Chawla     | Gynecologist       | 12:30:00 |                  10 | Gynecology       | 500005   | 500024   | 500034
+ D179      | Dr. Parth Gupta     | Orthopedics        | 13:30:00 |                   8 | Orthopedics      | 500006   | 500025   | 500035
+ D180      | Dr. Anjali Sharma   | Psychiatrist       | 14:30:00 |                   9 | Psychiatry       | 500007   | 500026   | 500036
+ D181      | Dr. Yash Patel      | Cardiologist       | 15:30:00 |                  13 | Cardiology       | 500008   | 500027   | 500037
+ D182      | Dr. Simran Nair     | Endocrinologist    | 08:45:00 |                  12 | Endocrinology    | 500001   | 500028   | 500038
+ D183      | Dr. Veer Kapoor     | Dermatologist      | 09:45:00 |                  10 | Dermatology      | 500002   | 500029   | 500039
+ D184      | Dr. Shilpa Joshi    | Hematologist       | 10:45:00 |                  11 | Hematology       | 500003   | 500030   | 500040
+ D185      | Dr. Dev Iyer        | Gastroenterologist | 11:45:00 |                  16 | Gastroenterology | 500004   | 500031   | 500041
+ D186      | Dr. Arpita Rao      | Nephrologist       | 12:45:00 |                  14 | Nephrology       | 500005   | 500032   | 500042
+ D187      | Dr. Nishant Jain    | Pediatrician       | 13:45:00 |                   9 | Pediatrics       | 500006   | 500033   | 500043
+ D188      | Dr. Avni Banerjee   | Ophthalmologist    | 14:45:00 |                   8 | Ophthalmology    | 500007   | 500034   | 500044
+ D189      | Dr. Aryan Reddy     | General Medicine   | 15:45:00 |                  17 | General Medicine | 500008   | 500035   | 500045
+ D190      | Dr. Kaira Singh     | Psychiatrist       | 08:15:00 |                  10 | Psychiatry       | 500001   | 500036   | 500046
+ D191      | Dr. Vihaan Sharma   | Orthopedics        | 09:15:00 |                  19 | Orthopedics      | 500002   | 500037   | 500047
+ D192      | Dr. Aanya Gupta     | Cardiologist       | 10:15:00 |                  11 | Cardiology       | 500003   | 500038   | 500048
+ D193      | Dr. Ishaan Desai    | Pulmonologist      | 11:15:00 |                  12 | Pulmonology      | 500004   | 500039   | 500049
+ D194      | Dr. Saira Mehta     | Nephrologist       | 12:15:00 |                  15 | Nephrology       | 500005   | 500040   | 500001
+ D195      | Dr. Anirudh Rao     | Neurologist        | 13:15:00 |                  10 | Neurology        | 500006   | 500041   | 500002
+ D196      | Dr. Aditya Kapoor   | Hematologist       | 14:15:00 |                  14 | Hematology       | 500007   | 500042   | 500003
+ D197      | Dr. Priyanka Singh  | Gastroenterologist | 15:15:00 |                  13 | Gastroenterology | 500008   | 500043   | 500004
+ D198      | Dr. Sanjay Nair     | Endocrinologist    | 08:00:00 |                  18 | Endocrinology    | 500001   | 500044   | 500005
+(98 rows)
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+   Table "public.hospitals"
+    Column     |          Type          | Collation | Nullable |
+          Default
+---------------+------------------------+-----------+----------+------------------------------------------------
+ hospital_id   | integer                |           | not null | nextval('hospitals_hospital_id_seq'::regclass)
+ hospital_name | character varying(100) |           |          |
+ pincode       | character varying(6)   |           | not null |
+Indexes:
+    "hospitals_pkey" PRIMARY KEY, btree (hospital_id)
+
+
+
+-----------------------------------------------------------------
+  Table "public.medicines_stock"
+       Column       |          Type          | Collation | Nullable |
+       Default
+--------------------+------------------------+-----------+----------+---------------------------------------------
+ id                 | integer                |           | not null | nextval('medicines_stock_id_seq'::regclass)
+ medicine_name      | character varying(255) |           | not null |
+ quantity           | integer                |           | not null |
+ date_of_issue      | date                   |           | not null |
+ type_of_medication | character varying(100) |           |          |
+ date_of_expiry     | date                   |           | not null |
+ dosage             | character varying(100) |           |          |
+ dispensed          | boolean                |           |          | false
+ dispensed_date     | date                   |           |          |
+Indexes:
+    "medicines_stock_pkey" PRIMARY KEY, btree (id)
+
+----------------------------------------------------------
+ Table "public.patients"
+          Column           |          Type          | Collation | Nullable | Default
+---------------------------+------------------------+-----------+----------+---------
+ patient_id                | character varying(200) |           | not null |
+ patient_name              | character varying(100) |           |          |
+ disease                   | text                   |           |          |
+ severity                  | text                   |           |          |
+ queue_number              | integer                |           |          |
+ scheduled_start_time      | time without time zone |           |          |
+ actual_start_time         | time without time zone |           |          |
+ waiting_time_min          | integer                |           |          |
+ consultation_duration_min | integer                |           |          |
+ clinic_id                 | character varying(10)  |           |          |
+ chatbot                   | text                   |           |          |
+ summarizer                | text                   |           |          |
+ age                       | integer                |           |          |
+ weight                    | integer                |           |          |
+ mail                      | character varying(100) |           |          |
+ pincode                   | character varying(10)  |           |          |
+Indexes:
+    "patients_pkey" PRIMARY KEY, btree (patient_id)
+Referenced by:
+    TABLE "beds" CONSTRAINT "beds_patient_id_fkey" FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+    TABLE "appointments" CONSTRAINT "fk_patient" FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
+
+
+    ---------------------------------------------------------------------
+          Table "public.session"
+ Column |            Type             | Collation | Nullable | Default
+--------+-----------------------------+-----------+----------+---------
+ sid    | character varying           |           | not null |
+ sess   | json                        |           | not null |
+ expire | timestamp without time zone |           | not null |
+Indexes:
+    "session_pkey" PRIMARY KEY, btree (sid)
+---------------------------------------------------------------------------------
+ Table "public.severity_ranking"
+  Column  |         Type          | Collation | Nullable | Default
+----------+-----------------------+-----------+----------+---------
+ severity | character varying(50) |           | not null |
+ priority | integer               |           |          |
+Indexes:
+    "severity_ranking_pkey" PRIMARY KEY, btree (severity)
+
+-----------------------------------------------------------
+
+
+    Table "public.users"
+  Column  |          Type          | Collation | Nullable |                Default
+----------+------------------------+-----------+----------+----------------------------------------
+ user_id  | integer                |           | not null | nextval('users_user_id_seq'::regclass)
+ username | character varying(50)  |           | not null |
+ password | character varying(255) |           | not null |
+ role     | character varying(20)  |           |          | 'patient'::character varying
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (user_id)
+    "users_username_key" UNIQUE CONSTRAINT, btree (username)
+

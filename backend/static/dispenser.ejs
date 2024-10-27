@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispense Medicines</title>
+    
+    <style>
+        /* General Body Styling */
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Unique Cursor */
+        body, button, select, input {
+            cursor: url('https://example.com/custom-cursor.png'), auto; /* Replace with an actual URL for a custom cursor */
+        }
+
+        /* Wrapper with Glassmorphism Effect */
+        .wrapper {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            width: 420px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.4s ease;
+            position: relative; /* For pseudo-elements */
+        }
+
+        .wrapper:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Title Styling */
+        .title {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Form Styling */
+        .dispense-form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .form-group {
+            width: 100%;
+            position: relative; /* For pseudo-elements */
+        }
+
+        /* Form Labels */
+        label {
+            color: #e0e0e0;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        /* Input Fields and Select Box */
+        select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            color: #333;
+            margin-top: 5px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Focus and Hover Effects */
+        select:focus, input[type="text"]:focus, input[type="number"]:focus {
+            border-color: transparent;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Pseudo-Elements for Form Groups */
+        .form-group::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #fff;
+        }
+
+        /* Submit Button */
+       /* Flashy Submit Button */
+.submit-btn {
+    background-color: #00e6e6; /* Bright teal for visibility */
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    margin-top: 15px;
+    box-shadow: 0 0 15px rgba(0, 230, 230, 0.6), 0 0 25px rgba(0, 230, 230, 0.4), 0 0 35px rgba(0, 230, 230, 0.3);
+    animation: pulse 2s infinite;
+}
+
+/* Pulsating Neon Effect */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 230, 230, 0.6), 0 0 25px rgba(0, 230, 230, 0.4), 0 0 35px rgba(0, 230, 230, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(0, 230, 230, 1), 0 0 50px rgba(0, 230, 230, 0.8), 0 0 75px rgba(0, 230, 230, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(0, 230, 230, 0.6), 0 0 25px rgba(0, 230, 230, 0.4), 0 0 35px rgba(0, 230, 230, 0.3);
+    }
+}
+
+/* Neon Glow Animation on Hover */
+.submit-btn:hover {
+    background-color: #1affff; /* Lighter teal */
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.6), 0 0 90px rgba(0, 255, 255, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 15px rgba(0, 230, 230, 0.6), 0 0 25px rgba(0, 230, 230, 0.4), 0 0 35px rgba(0, 230, 230, 0.3);
+}
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1 class="title">Dispense Medicines</h1>
+        <form action="/dispense" method="POST" class="dispense-form">
+
+            <div class="form-group" data-icon="💊">
+                <label for="medicine_name">Medicine Name:</label>
+                <select id="medicine_name" name="medicine_name" onchange="updateFields()" required>
+                    <option value="">Select Medicine</option>
+                    <% medicines.forEach(medicine => { %>
+                        <option value="<%= medicine.medicine_name %>" 
+                                data-dosage="<%= medicine.dosage %>"
+                                data-quantity="<%= medicine.quantity %>">
+                            <%= medicine.medicine_name %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group" data-icon="📝">
+                <label for="dosage">Dosage:</label>
+                <input type="text" id="dosage" name="dosage" readonly>
+            </div>
+            <div class="form-group" data-icon="📦">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" required>
+            </div>
+            <button type="submit" class="submit-btn">Dispense</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script>
+        // Enhanced GSAP Animations
+        gsap.from(".wrapper", { duration: 1.5, opacity: 0, y: -50, ease: "power4.out" });
+        gsap.from(".title", { duration: 1.2, opacity: 0, y: 30, delay: 0.3, ease: "back.out(1.7)" });
+        gsap.from(".form-group", { duration: 1.2, opacity: 0, x: -30, stagger: 0.3, delay: 0.6, ease: "elastic.out(1, 0.75)" });
+        gsap.from(".submit-btn", { duration: 1.2, opacity: 0, scale: 0.8, delay: 1.2, ease: "elastic.out(1, 0.75)" });
+    </script>
+    <script>
+        function updateFields() {
+            const select = document.getElementById('medicine_name');
+            const dosageInput = document.getElementById('dosage');
+            const quantityInput = document.getElementById('quantity');
+            
+            const selectedOption = select.options[select.selectedIndex];
+            const dosage = selectedOption.getAttribute('data-dosage');
+            const quantity = selectedOption.getAttribute('data-quantity');
+
+            dosageInput.value = dosage;
+            quantityInput.setAttribute('max', quantity);
+        }
+    </script>
+</body>
+</html>
